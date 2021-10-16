@@ -1,4 +1,5 @@
 {
+    "name": "tomasfejfar/phpstan-zf1",
     "require": {
         "phpstan/phpstan": "^0.12.99"
     },
