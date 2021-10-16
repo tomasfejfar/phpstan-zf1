@@ -1,0 +1,4 @@
+services:
+    - class: \PhpStanZF1\Zend\Db\Table\FetchRowExtension
+      tags:
+          - phpstan.broker.dynamicMethodReturnTypeExtension

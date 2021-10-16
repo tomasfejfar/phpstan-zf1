@@ -1,1 +1,36 @@
-{}
+{
+    "require": {
+        "phpstan/phpstan": "^0.12.99"
+    },
+    "require-dev": {
+        "diablomedia/zendframework1-db": "^1.0",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\": "tests/fixtures/",
+            "Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "PhpStanZF1\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist"
+    },
+    "extra": {
+        "phpstan": {
+            "includes": [
+                "extension.neon"
+            ]
+        }
+    },
+    "scripts": {
+        "tests": "phpunit --colors=always"
+    }
+}
