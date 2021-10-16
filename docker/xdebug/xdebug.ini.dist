@@ -1,0 +1,10 @@
+# @see https://3.xdebug.org/docs/all_settings
+xdebug.mode=debug
+xdebug.client_host =host.docker.internal
+xdebug.client_port=9003
+xdebug.discover_client_host=1
+xdebug.start_with_request=default
+xdebug.idekey=PHPSTORM
+xdebug.cli_color=1
+xdebug.max_nesting_level=1000
+xdebug.output_dir=/tmp/debug

@@ -1,0 +1,16 @@
+version: '3'
+services:
+  dev:
+    build: .
+    volumes:
+      - ./:/code
+      - ./data:/data
+
+  dev-xdebug:
+    build:
+      context: docker/xdebug
+      args:
+        IMAGE: phpstan-zf1_dev
+    volumes:
+      - ./:/code
+      - ./data:/data
