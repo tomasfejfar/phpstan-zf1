@@ -11,6 +11,8 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
+use PHPStan\Type\Generic\GenericObjectType;
+use PHPStan\Type\Generic\TemplateGenericObjectType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
@@ -114,7 +116,11 @@ class TableExtension implements DynamicMethodReturnTypeExtension
             return $originalReturnType;
         }
 
-        return TypeCombinator::union(new ArrayType(new IntegerType(), $dbTableRowClass), new ObjectType('Zend_Db_Table_Rowset'));
+
+            return new GenericObjectType('Zend_Db_Table_Rowset_Abstract', [
+                $dbTableRowClass,
+                $dbTableClass
+            ]);
     }
 
     private function getDbTableRowClass(TypeWithClassName $dbTableClass): ?ObjectType
