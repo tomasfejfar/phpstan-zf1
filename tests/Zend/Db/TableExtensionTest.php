@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Zend\Db\Table;
+namespace Tests\Zend\Db;
 
 use PHPStan\Testing\TypeInferenceTestCase;
+use const ROOT;
 
-class FetchRowExtensionTest extends TypeInferenceTestCase
+class TableExtensionTest extends TypeInferenceTestCase
 {
     public static function getAdditionalConfigFiles(): array
     {

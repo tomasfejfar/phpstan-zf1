@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpStanZF1\Zend\Db\Table;
+namespace PhpStanZF1\Zend\Db;
 
 use LogicException;
 use PhpParser\Node\Expr\MethodCall;
@@ -19,7 +19,7 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
 use const PHP_VERSION_ID;
 
-class FetchRowExtension implements DynamicMethodReturnTypeExtension
+class TableExtension implements DynamicMethodReturnTypeExtension
 {
     const METHOD_CREATE_ROW = 'createRow';
     const METHOD_FETCH_ALL = 'fetchAll';
