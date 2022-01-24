@@ -25,7 +25,7 @@ class RowClassReflector
 
         $nativeReflection = $dbTableClass->getClassReflection()->getNativeReflection();
         if (!$nativeReflection->hasProperty('_rowClass')) {
-            return new ObjectType('Zend_Db_Table_Row_Abstract');
+            return new ObjectType('Zend_Db_Table_Row');
         }
 
         if (PHP_VERSION_ID <= 80000) {
@@ -37,7 +37,7 @@ class RowClassReflector
 
         if (!$rowClassName) {
             // row class is not defined
-            return new ObjectType('Zend_Db_Table_Row_Abstract');
+            return new ObjectType('Zend_Db_Table_Row');
         }
 
         return new ObjectType($rowClassName);
@@ -46,7 +46,7 @@ class RowClassReflector
     public function fromRowsetClass(Type $rowsetClass): Type
     {
         if (!$rowsetClass instanceof GenericObjectType) {
-            return new ObjectType('Zend_Db_Table_Row_Abstract');
+            return new ObjectType('Zend_Db_Table_Row');
         }
 
         $rowType = $rowsetClass->getTypes()[0];

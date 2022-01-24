@@ -5,3 +5,6 @@ services:
     - class: \PhpStanZF1\Zend\Db\RowsetExtension
       tags:
           - phpstan.broker.dynamicMethodReturnTypeExtension
+parameters:
+  stubFiles:
+    - stubs/Zend_Db_Table_Rowset_Abstract.stub
