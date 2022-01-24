@@ -9,23 +9,28 @@ use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Type\ArrayType;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\Generic\GenericObjectType;
-use PHPStan\Type\Generic\TemplateGenericObjectType;
 use PHPStan\Type\IntegerType;
+use PHPStan\Type\IterableType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
-use const PHP_VERSION_ID;
 
 class TableExtension implements DynamicMethodReturnTypeExtension
 {
     const METHOD_CREATE_ROW = 'createRow';
     const METHOD_FETCH_ALL = 'fetchAll';
     const METHOD_FETCH_ROW = 'fetchRow';
+
+    private RowClassReflector $rowClassReflector;
+
+    public function __construct()
+    {
+        $this->rowClassReflector = new RowClassReflector();
+    }
 
     public function getClass(): string
     {
@@ -116,33 +121,21 @@ class TableExtension implements DynamicMethodReturnTypeExtension
             return $originalReturnType;
         }
 
+        $rowsetType = new GenericObjectType('Zend_Db_Table_Rowset_Abstract', [
+            $dbTableRowClass,
+            $dbTableClass
+        ]);
 
-            return new GenericObjectType('Zend_Db_Table_Rowset_Abstract', [
-                $dbTableRowClass,
-                $dbTableClass
-            ]);
+        $x = new ObjectType('SeekableIterator<int,'.$dbTableRowClass->getClassName().'>');
+
+        $resultingType = TypeCombinator::intersect($x, $rowsetType);
+
+        return $resultingType;
     }
 
     private function getDbTableRowClass(TypeWithClassName $dbTableClass): ?ObjectType
     {
-        $nativeReflection = $dbTableClass->getClassReflection()->getNativeReflection();
-        if (!$nativeReflection->hasProperty('_rowClass')) {
-            return new ObjectType('Zend_Db_Table_Row_Abstract');
-        }
-
-        if (PHP_VERSION_ID <= 80000) {
-            $rowClassName = $nativeReflection->getDefaultProperties()['_rowClass'] ?? null;
-        } else {
-            $rowClassProperty = $nativeReflection->getProperty('_rowClass');
-            $rowClassName = $rowClassProperty->getDefaultValue();
-        }
-
-        if (!$rowClassName) {
-            // row class is not defined
-            return new ObjectType('Zend_Db_Table_Row_Abstract');
-        }
-
-        return new ObjectType($rowClassName);
+        return $this->rowClassReflector->fromTableClass($dbTableClass);
     }
 
     private function handleCreateRow(
