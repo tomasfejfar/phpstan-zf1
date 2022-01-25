@@ -26,13 +26,16 @@ class RowClassReflector
             return new ObjectType(Definitions::getDefaultRowFQCN());
         }
 
+
         if (PHP_VERSION_ID <= 80000) {
+
             $rowClassName = $nativeReflection->getDefaultProperties()[self::PROPERTY_ROW_CLASS] ?? null;
         } else {
             $rowClassProperty = $nativeReflection->getProperty(self::PROPERTY_ROW_CLASS);
             $rowClassName = $rowClassProperty->getDefaultValue();
         }
 
+        /** @var string|null $rowClassName  */
         if (!$rowClassName) {
             // row class is not defined
             return new ObjectType(Definitions::getDefaultRowFQCN());

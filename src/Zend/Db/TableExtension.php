@@ -11,11 +11,14 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\Generic\GenericObjectType;
+use PHPStan\Type\IntegerType;
+use PHPStan\Type\IterableType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
+use SeekableIterator;
 
 class TableExtension implements DynamicMethodReturnTypeExtension
 {
@@ -124,7 +127,7 @@ class TableExtension implements DynamicMethodReturnTypeExtension
         ]);
 
         return TypeCombinator::intersect(
-            new ObjectType('\iterable<int,'.$dbTableRowClass->getClassName().'>'),
+            new GenericObjectType('\SeekableIterator', [new IntegerType(), $dbTableRowClass]),
             $rowsetType
         );
     }
