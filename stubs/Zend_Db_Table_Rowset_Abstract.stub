@@ -23,6 +23,7 @@
 /**
  * @template TRow of Zend_Db_Table_Row_Abstract
  * @template TTable of Zend_Db_Table_Abstract
+ * @implements \Iterator<int, TRow>
  */
 abstract class Zend_Db_Table_Rowset_Abstract implements SeekableIterator, Countable, ArrayAccess
 {
@@ -52,14 +53,14 @@ abstract class Zend_Db_Table_Rowset_Abstract implements SeekableIterator, Counta
     /**
      * TTable class name.
      *
-     * @var string
+     * @var class-string<TTable>
      */
     protected $_tableClass;
 
     /**
      * TRow class name.
      *
-     * @var string
+     * @var class-string<TRow>
      */
     protected $_rowClass = 'Zend_Db_Table_Row';
 
