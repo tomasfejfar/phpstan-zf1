@@ -126,7 +126,7 @@ class TableExtension implements DynamicMethodReturnTypeExtension
             $dbTableClass
         ]);
 
-        $x = new ObjectType('SeekableIterator<int,'.$dbTableRowClass->getClassName().'>');
+        $x = new ObjectType('\SeekableIterator<int,'.$dbTableRowClass->getClassName().'>');
 
         $resultingType = TypeCombinator::intersect($x, $rowsetType);
 

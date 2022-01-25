@@ -21,9 +21,9 @@
  */
 
 /**
- * @template TRow of Zend_Db_Table_Row_Abstract
+ * @template TValue of Zend_Db_Table_Row_Abstract
  * @template TTable of Zend_Db_Table_Abstract
- * @implements \Iterator<int, TRow>
+ * @template TKey of int
  */
 abstract class Zend_Db_Table_Rowset_Abstract implements SeekableIterator, Countable, ArrayAccess
 {
@@ -58,9 +58,9 @@ abstract class Zend_Db_Table_Rowset_Abstract implements SeekableIterator, Counta
     protected $_tableClass;
 
     /**
-     * TRow class name.
+     * TValue class name.
      *
-     * @var class-string<TRow>
+     * @var class-string<TValue>
      */
     protected $_rowClass = 'Zend_Db_Table_Row';
 
@@ -174,7 +174,7 @@ abstract class Zend_Db_Table_Rowset_Abstract implements SeekableIterator, Counta
      * Similar to the current() function for arrays in PHP
      * Required by interface Iterator.
      *
-     * @return TRow|null current element from the collection
+     * @return TValue|null current element from the collection
      */
     public function current()
     {}
@@ -238,7 +238,7 @@ abstract class Zend_Db_Table_Rowset_Abstract implements SeekableIterator, Counta
      * Required by the ArrayAccess implementation
      *
      * @param string $offset
-     * @return TRow
+     * @return TValue
      */
     public function offsetGet($offset)
     {}
