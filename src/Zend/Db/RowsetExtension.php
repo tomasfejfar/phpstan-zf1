@@ -70,7 +70,7 @@ class RowsetExtension implements DynamicMethodReturnTypeExtension
 
         if ($rowsetType instanceof IntersectionType) {
             $types = $rowsetType->getTypes();
-            $typeZendRowset = new ObjectType('Zend_Db_Table_Rowset_Abstract');
+            $typeZendRowset = new ObjectType(Definitions::getDefaultRowsetFQCN());
             $zendDbRowsetType = array_reduce($types, function (?Type $carry, Type $type) use ($typeZendRowset) {
                 if ($typeZendRowset->isSuperTypeOf($type)) {
                     return $type;

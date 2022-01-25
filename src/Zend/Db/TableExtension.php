@@ -11,8 +11,6 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\Generic\GenericObjectType;
-use PHPStan\Type\IntegerType;
-use PHPStan\Type\IterableType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -86,7 +84,6 @@ class TableExtension implements DynamicMethodReturnTypeExtension
         MethodReflection $methodReflection
     ): Type {
         $originalReturnType = $this->getOriginalReturnType($scope, $methodCall, $methodReflection);
-
         $dbTableClass = $scope->getType($methodCall->var);
 
         if (!$dbTableClass instanceof TypeWithClassName) {
@@ -121,16 +118,15 @@ class TableExtension implements DynamicMethodReturnTypeExtension
             return $originalReturnType;
         }
 
-        $rowsetType = new GenericObjectType('Zend_Db_Table_Rowset_Abstract', [
+        $rowsetType = new GenericObjectType(Definitions::getDefaultRowsetFQCN(), [
             $dbTableRowClass,
             $dbTableClass
         ]);
 
-        $x = new ObjectType('\SeekableIterator<int,'.$dbTableRowClass->getClassName().'>');
-
-        $resultingType = TypeCombinator::intersect($x, $rowsetType);
-
-        return $resultingType;
+        return TypeCombinator::intersect(
+            new ObjectType('\iterable<int,'.$dbTableRowClass->getClassName().'>'),
+            $rowsetType
+        );
     }
 
     private function getDbTableRowClass(TypeWithClassName $dbTableClass): ?ObjectType

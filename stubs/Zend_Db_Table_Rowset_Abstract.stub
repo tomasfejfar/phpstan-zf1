@@ -21,8 +21,8 @@
  */
 
 /**
- * @template TValue of Zend_Db_Table_Row_Abstract
- * @template TTable of Zend_Db_Table_Abstract
+ * @template TValue of \Zend_Db_Table_Row_Abstract
+ * @template TTable of \Zend_Db_Table_Abstract
  * @template TKey of int
  */
 abstract class Zend_Db_Table_Rowset_Abstract implements SeekableIterator, Countable, ArrayAccess

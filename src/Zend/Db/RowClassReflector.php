@@ -6,38 +6,36 @@ namespace PhpStanZF1\Zend\Db;
 
 use LogicException;
 use PHPStan\Type\Generic\GenericObjectType;
-use PHPStan\Type\Generic\TemplateTypeVariance;
-use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
-use PHPStan\Type\UnionType;
-use function PHPStan\dumpType;
 
 class RowClassReflector
 {
+    const PROPERTY_ROW_CLASS = '_rowClass';
+
     public function fromTableClass(TypeWithClassName $dbTableClass): ObjectType
     {
-        $tableSupertype = new ObjectType('Zend_Db_Table_Abstract');
+        $tableSupertype = new ObjectType(Definitions::getDefaultTableFQCN());
         if (!$tableSupertype->isSuperTypeOf($dbTableClass)) {
             throw new LogicException('Cannot extract rowclass from something that is not a table');
         }
 
         $nativeReflection = $dbTableClass->getClassReflection()->getNativeReflection();
-        if (!$nativeReflection->hasProperty('_rowClass')) {
-            return new ObjectType('Zend_Db_Table_Row');
+        if (!$nativeReflection->hasProperty(self::PROPERTY_ROW_CLASS)) {
+            return new ObjectType(Definitions::getDefaultRowFQCN());
         }
 
         if (PHP_VERSION_ID <= 80000) {
-            $rowClassName = $nativeReflection->getDefaultProperties()['_rowClass'] ?? null;
+            $rowClassName = $nativeReflection->getDefaultProperties()[self::PROPERTY_ROW_CLASS] ?? null;
         } else {
-            $rowClassProperty = $nativeReflection->getProperty('_rowClass');
+            $rowClassProperty = $nativeReflection->getProperty(self::PROPERTY_ROW_CLASS);
             $rowClassName = $rowClassProperty->getDefaultValue();
         }
 
         if (!$rowClassName) {
             // row class is not defined
-            return new ObjectType('Zend_Db_Table_Row');
+            return new ObjectType(Definitions::getDefaultRowFQCN());
         }
 
         return new ObjectType($rowClassName);
@@ -46,7 +44,7 @@ class RowClassReflector
     public function fromRowsetClass(Type $rowsetClass): Type
     {
         if (!$rowsetClass instanceof GenericObjectType) {
-            return new ObjectType('Zend_Db_Table_Row');
+            return new ObjectType(Definitions::getDefaultRowFQCN());
         }
 
         $rowType = $rowsetClass->getTypes()[0];
