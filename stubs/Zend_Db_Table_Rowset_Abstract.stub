@@ -144,25 +144,25 @@ abstract class Zend_Db_Table_Rowset_Abstract implements SeekableIterator, Counta
     public function seek($position)
     {}
     /**
-     * @param string $offset
+     * @param TKey $offset
      * @return boolean
      */
     public function offsetExists($offset)
     {}
     /**
-     * @param string $offset
+     * @param TKey $offset
      * @return TValue
      */
     public function offsetGet($offset)
     {}
     /**
-     * @param string $offset
+     * @param TKey|null $offset
      * @param mixed $value
      */
     public function offsetSet($offset, $value)
     {}
     /**
-     * @param string $offset
+     * @param TKey $offset
      */
     public function offsetUnset($offset)
     {}
