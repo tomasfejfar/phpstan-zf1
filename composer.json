@@ -1,7 +1,7 @@
 {
     "name": "tomasfejfar/phpstan-zf1",
     "require": {
-        "phpstan/phpstan": "^0.12.99"
+        "phpstan/phpstan": "^0.12.99|^1.0"
     },
     "require-dev": {
         "diablomedia/zendframework1-db": "^1.0",
@@ -22,7 +22,8 @@
     },
     "config": {
         "sort-packages": true,
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "lock": false
     },
     "extra": {
         "phpstan": {
