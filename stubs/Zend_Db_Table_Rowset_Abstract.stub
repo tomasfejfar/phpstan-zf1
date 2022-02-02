@@ -100,7 +100,7 @@ abstract class Zend_Db_Table_Rowset_Abstract implements SeekableIterator, Counta
     /**
      * Constructor.
      *
-     * @param array $config
+     * @param mixed[] $config
      */
     public function __construct(array $config)
     {}
@@ -276,9 +276,13 @@ abstract class Zend_Db_Table_Rowset_Abstract implements SeekableIterator, Counta
      *
      * Updates the $_data property with current row object values.
      *
-     * @return array
+     * @return mixed[]
      */
     public function toArray()
     {}
+    /**
+     * @param int $position
+     * @return TValue
+     */
     protected function _loadAndReturnRow($position)
     {}}
