@@ -1,0 +1,187 @@
+<?php
+class Zend_Db_Table_Row_Abstract{}
+class Zend_Db_Table_Abstract{}
+class Zend_Db_Table_Row_Exception implements Throwable {}
+class Zend_Db_Table_Rowset_Exception implements Throwable {}
+
+/**
+ * @template TValue of \Zend_Db_Table_Row_Abstract
+ * @template TZendDbTable of \Zend_Db_Table_Abstract
+ * @template TKey of int
+ * @implements SeekableIterator<int, TValue>
+ * @implements ArrayAccess<int, TValue>
+ */
+abstract class Zend_Db_Table_Rowset_Abstract implements SeekableIterator, Countable, ArrayAccess
+{
+    /**
+     * @var mixed[]
+     */
+    protected $_data = [];
+
+    /**
+     * @var TZendDbTable
+     */
+    protected $_table;
+
+    /**
+     * @var boolean
+     */
+    protected $_connected = true;
+
+    /**
+     * @var class-string<TZendDbTable>
+     */
+    protected $_tableClass;
+
+    /**
+     * @var class-string<TValue>
+     */
+    protected $_rowClass = 'Zend_Db_Table_Row';
+
+    /**
+     * @var integer
+     */
+    protected $_pointer = 0;
+
+    /**
+     * @var integer
+     */
+    protected $_count;
+
+    /**
+     * @var TValue[]
+     */
+    protected $_rows = [];
+
+    /**
+     * @var boolean
+     */
+    protected $_stored = false;
+
+    /**
+     * @var boolean
+     */
+    protected $_readOnly = false;
+
+    /**
+     * @param mixed[] $config
+     */
+    public function __construct(array $config)
+    {}
+
+/**
+     * @return array
+     */
+    public function __sleep()
+    {}
+    /**
+     * @return void
+     */
+    public function __wakeup()
+    {}
+    /**
+     * @return void
+     */
+    public function init()
+    {}
+    /**
+     * @return boolean
+     */
+    public function isConnected()
+    {}
+    /**
+     * @return TZendDbTable
+     */
+    public function getTable()
+    {}
+    /**
+     * @param TZendDbTable $table
+     * @return boolean
+     * @throws Zend_Db_Table_Row_Exception
+     */
+    public function setTable($table)
+    {}
+    /**
+     * @return string
+     */
+    public function getTableClass()
+    {}
+    /**
+     * @return $this Fluent interface.
+     */
+    public function rewind()
+    {}
+    /**
+     * @return TValue|null current element from the collection
+     */
+    public function current()
+    {}
+    /**
+     * @return int
+     */
+    public function key()
+    {}
+    /**
+     * @return void
+     */
+    public function next()
+    {}
+    /**
+     * @return bool False if there's nothing more to iterate over
+     */
+    public function valid()
+    {}
+    /**
+     * @return int
+     */
+    public function count()
+    {}
+    /**
+     * @param int $position the position to seek to
+     * @return $this
+     * @throws Zend_Db_Table_Rowset_Exception
+     */
+    public function seek($position)
+    {}
+    /**
+     * @param TKey $offset
+     * @return boolean
+     */
+    public function offsetExists($offset)
+    {}
+    /**
+     * @param TKey $offset
+     * @return TValue
+     */
+    public function offsetGet($offset)
+    {}
+    /**
+     * @param TKey|null $offset
+     * @param mixed $value
+     */
+    public function offsetSet($offset, $value)
+    {}
+    /**
+     * @param TKey $offset
+     */
+    public function offsetUnset($offset)
+    {}
+    /**
+     * @param int $position the position of the row expected
+     * @param bool $seek wether or not seek the iterator to that position after
+     * @return TValue
+     * @throws Zend_Db_Table_Rowset_Exception
+     */
+    public function getRow($position, $seek = false)
+    {}
+    /**
+     * @return mixed[]
+     */
+    public function toArray()
+    {}
+    /**
+     * @param int $position
+     * @return TValue
+     */
+    protected function _loadAndReturnRow($position)
+    {}}

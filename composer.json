@@ -4,7 +4,7 @@
         "phpstan/phpstan": "^0.12.99|^1.0"
     },
     "require-dev": {
-        "diablomedia/zendframework1-db": "^1.0",
+        "diablomedia/zendframework1-db": "*",
         "phpunit/phpunit": "^9.5"
     },
     "autoload-dev": {
