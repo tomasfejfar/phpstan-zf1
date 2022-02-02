@@ -30,7 +30,7 @@ abstract class Zend_Db_Table_Rowset_Abstract implements SeekableIterator, Counta
     /**
      * The original data for each row.
      *
-     * @var array
+     * @var mixed[]
      */
     protected $_data = [];
 
@@ -81,7 +81,7 @@ abstract class Zend_Db_Table_Rowset_Abstract implements SeekableIterator, Counta
     /**
      * Collection of instantiated Zend_Db_Table_Row objects.
      *
-     * @var array
+     * @var TValue[]
      */
     protected $_rows = [];
 
