@@ -9,14 +9,16 @@ use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Type\ArrayType;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\IntegerType;
-use PHPStan\Type\NullType;
+use PHPStan\Type\IntersectionType;
+use PHPStan\Type\IterableType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
+use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\TypeWithClassName;
+use PHPStan\Type\UnionType;
 use const PHP_VERSION_ID;
 
 class TableExtension implements DynamicMethodReturnTypeExtension
@@ -73,7 +75,7 @@ class TableExtension implements DynamicMethodReturnTypeExtension
         return $variant->getReturnType();
     }
 
-    private function handleFetchRow(
+    protected function handleFetchRow(
         Scope $scope,
         MethodCall $methodCall,
         MethodReflection $methodReflection
@@ -88,14 +90,17 @@ class TableExtension implements DynamicMethodReturnTypeExtension
 
         $dbTableRowClass = $this->getDbTableRowClass($dbTableClass);
 
-        if ($dbTableRowClass === null) {
-            return $originalReturnType;
-        }
-
-        return TypeCombinator::union($dbTableRowClass, new NullType());
+        return $this->replaceTypesWithType(
+            $originalReturnType,
+            [
+                'Zend_Db_Table_Row',
+                'Zend_Db_Table_Row_Abstract',
+            ],
+            $dbTableRowClass,
+        );
     }
 
-    private function handleFetchAll(
+    protected function handleFetchAll(
         Scope $scope,
         MethodCall $methodCall,
         MethodReflection $methodReflection
@@ -114,7 +119,7 @@ class TableExtension implements DynamicMethodReturnTypeExtension
             return $originalReturnType;
         }
 
-        return TypeCombinator::union(new ArrayType(new IntegerType(), $dbTableRowClass), new ObjectType('Zend_Db_Table_Rowset'));
+        return TypeCombinator::intersect(new IterableType(new IntegerType(), $dbTableRowClass), new ObjectType('Zend_Db_Table_Rowset_Abstract'));
     }
 
     private function getDbTableRowClass(TypeWithClassName $dbTableClass): ?ObjectType
@@ -139,7 +144,7 @@ class TableExtension implements DynamicMethodReturnTypeExtension
         return new ObjectType($rowClassName);
     }
 
-    private function handleCreateRow(
+    protected function handleCreateRow(
         Scope $scope,
         MethodCall $methodCall,
         MethodReflection $methodReflection
@@ -159,5 +164,33 @@ class TableExtension implements DynamicMethodReturnTypeExtension
         }
 
         return $dbTableRowClass;
+    }
+
+    /**
+     * @param class-string[] $classNamesToReplace
+     */
+    public function replaceTypesWithType(
+        Type $sourceType,
+        array $classNamesToReplace,
+        ?ObjectType $typeToReplaceWith
+    ): Type {
+        return TypeTraverser::map(
+            $sourceType,
+            function (Type $type, $traverse) use ($typeToReplaceWith, $classNamesToReplace) {
+                if ($type instanceof UnionType || $type instanceof IntersectionType) {
+                    return $traverse($type);
+                }
+
+                if (!$type instanceof ObjectType) {
+                    return $type;
+                }
+
+                if (in_array($type->getClassName(), $classNamesToReplace)) {
+                    return $typeToReplaceWith;
+                }
+
+                return $type;
+            },
+        );
     }
 }

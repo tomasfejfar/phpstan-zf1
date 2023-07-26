@@ -19,8 +19,8 @@ class TestClass
         // animal model does not have rowClass defined
         assertType('Zend_Db_Table_Row|null', $this->animalModel->fetchRow());
 
-        assertType('array<int, Zend_Db_Table_Row>|Zend_Db_Table_Rowset', $this->animalModel->fetchAll());
-        assertType('array<int, ' . CarRow::class . '>|Zend_Db_Table_Rowset', $this->carsModel->fetchAll());
+        assertType('iterable<int, Zend_Db_Table_Row>&Zend_Db_Table_Rowset_Abstract', $this->animalModel->fetchAll());
+        assertType('iterable<int, ' . CarRow::class . '>&Zend_Db_Table_Rowset_Abstract', $this->carsModel->fetchAll());
 
         assertType(CarRow::class, $this->carsModel->createRow());
         // animal model does not have rowClass defined
