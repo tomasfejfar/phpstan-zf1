@@ -10,7 +10,7 @@ services:
     build:
       context: docker/xdebug
       args:
-        IMAGE: phpstan-zf1_dev
+        IMAGE: phpstan-zf1-dev
     volumes:
       - ./:/code
       - ./data:/data
