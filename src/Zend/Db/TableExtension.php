@@ -21,9 +21,9 @@ use const PHP_VERSION_ID;
 
 class TableExtension implements DynamicMethodReturnTypeExtension
 {
-    const METHOD_CREATE_ROW = 'createRow';
-    const METHOD_FETCH_ALL = 'fetchAll';
-    const METHOD_FETCH_ROW = 'fetchRow';
+    private const METHOD_CREATE_ROW = 'createRow';
+    private const METHOD_FETCH_ALL = 'fetchAll';
+    private const METHOD_FETCH_ROW = 'fetchRow';
 
     public function getClass(): string
     {
@@ -32,7 +32,7 @@ class TableExtension implements DynamicMethodReturnTypeExtension
 
     public function isMethodSupported(MethodReflection $methodReflection): bool
     {
-        return in_array($methodReflection->getName(), $this->supportedMethods());
+        return in_array($methodReflection->getName(), $this->supportedMethods(), true);
     }
 
     /** @return string[] */
