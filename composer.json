@@ -1,7 +1,8 @@
 {
     "name": "tomasfejfar/phpstan-zf1",
     "require": {
-        "phpstan/phpstan": "^0.12.99|^1.0"
+        "phpstan/phpstan": "^0.12.99|^1.0",
+        "php": "7.4|^8.0"
     },
     "require-dev": {
         "diablomedia/zendframework1-db": "^1.0",
