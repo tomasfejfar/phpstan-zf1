@@ -73,7 +73,7 @@ class TableExtension implements DynamicMethodReturnTypeExtension
         return $variant->getReturnType();
     }
 
-    private function handleFetchRow(
+    protected function handleFetchRow(
         Scope $scope,
         MethodCall $methodCall,
         MethodReflection $methodReflection
@@ -95,7 +95,7 @@ class TableExtension implements DynamicMethodReturnTypeExtension
         return TypeCombinator::union($dbTableRowClass, new NullType());
     }
 
-    private function handleFetchAll(
+    protected function handleFetchAll(
         Scope $scope,
         MethodCall $methodCall,
         MethodReflection $methodReflection
@@ -139,7 +139,7 @@ class TableExtension implements DynamicMethodReturnTypeExtension
         return new ObjectType($rowClassName);
     }
 
-    private function handleCreateRow(
+    protected function handleCreateRow(
         Scope $scope,
         MethodCall $methodCall,
         MethodReflection $methodReflection
