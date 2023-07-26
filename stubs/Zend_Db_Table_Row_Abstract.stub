@@ -1,0 +1,581 @@
+<?php
+
+class Zend_Db_Table_Abstract
+{
+}
+
+class Zend_Db_Table_Row_Exception implements Throwable
+{
+}
+
+class Zend_Db_Table_Rowset_Exception implements Throwable
+{
+}
+
+/**
+ * @template TZendDbTable of \Zend_Db_Table_Abstract
+ * @template TKey of int
+ * @implements IteratorAggregate<int, mixed>
+ * @implements ArrayAccess<int, mixed>
+ */
+abstract class Zend_Db_Table_Row_Abstract implements ArrayAccess, IteratorAggregate
+{
+    /**
+     * The data for each column in the row (column_name => value).
+     * The keys must match the physical names of columns in the
+     * table for which this row is defined.
+     *
+     * @var array
+     */
+    protected $_data = [];
+
+    /**
+     * This is set to a copy of $_data when the data is fetched from
+     * a database, specified as a new tuple in the constructor, or
+     * when dirty data is posted to the database with save().
+     *
+     * @var array
+     */
+    protected $_cleanData = [];
+
+    /**
+     * Tracks columns where data has been updated. Allows more specific insert and
+     * update operations.
+     *
+     * @var array
+     */
+    protected $_modifiedFields = [];
+
+    /**
+     * Zend_Db_Table_Abstract parent class or instance.
+     *
+     * @var TZendDbTable|null
+     */
+    protected $_table = null;
+
+    /**
+     * Connected is true if we have a reference to a live
+     * Zend_Db_Table_Abstract object.
+     * This is false after the Rowset has been deserialized.
+     *
+     * @var boolean
+     */
+    protected $_connected = true;
+
+    /**
+     * A row is marked read only if it contains columns that are not physically represented within
+     * the database schema (e.g. evaluated columns/Zend_Db_Expr columns). This can also be passed
+     * as a run-time config options as a means of protecting row data.
+     *
+     * @var boolean
+     */
+    protected $_readOnly = false;
+
+    /**
+     * Name of the class of the Zend_Db_Table_Abstract object.
+     *
+     * @var class-string<TZendDbTable>|null
+     */
+    protected $_tableClass = null;
+
+    /**
+     * Primary row key(s).
+     *
+     * @var array
+     */
+    protected $_primary;
+
+    /**
+     * Constructor.
+     *
+     * Supported params for $config are:-
+     * - table       = class name or object of type Zend_Db_Table_Abstract
+     * - data        = values of columns in this row.
+     *
+     * @param array $config OPTIONAL Array of user-specified config options.
+     * @return void
+     * @throws Zend_Db_Table_Row_Exception
+     */
+    public function __construct(array $config = [])
+    {
+    }
+
+    /**
+     * Transform a column name from the user-specified form
+     * to the physical form used in the database.
+     * You can override this method in a custom Row class
+     * to implement column name mappings, for example inflection.
+     *
+     * @param string $columnName Column name given.
+     * @return string The column name after transformation applied (none by default).
+     * @throws Zend_Db_Table_Row_Exception if the $columnName is not a string.
+     */
+    protected function _transformColumn($columnName)
+    {
+    }
+
+    /**
+     * Retrieve row field value
+     *
+     * @param string $columnName The user-specified column name.
+     * @return mixed             The corresponding column value.
+     * @throws Zend_Db_Table_Row_Exception if the $columnName is not a column in the row.
+     */
+    public function __get($columnName)
+    {
+    }
+
+    /**
+     * Set row field value
+     *
+     * @param string $columnName The column key.
+     * @param mixed $value The value for the property.
+     * @return void
+     * @throws Zend_Db_Table_Row_Exception
+     */
+    public function __set($columnName, $value)
+    {
+    }
+
+    /**
+     * Unset row field value
+     *
+     * @param string $columnName The column key.
+     * @return $this
+     * @throws Zend_Db_Table_Row_Exception
+     */
+    public function __unset($columnName)
+    {
+    }
+
+    /**
+     * Test existence of row field
+     *
+     * @param string $columnName The column key.
+     * @return boolean
+     */
+    public function __isset($columnName)
+    {
+    }
+
+    /**
+     * Store table, primary key and data in serialized object
+     *
+     * @return array
+     */
+    public function __sleep()
+    {
+    }
+
+    /**
+     * Setup to do on wakeup.
+     * A de-serialized Row should not be assumed to have access to a live
+     * database connection, so set _connected = false.
+     *
+     * @return void
+     */
+    public function __wakeup()
+    {
+    }
+
+    /**
+     * Proxy to __isset
+     * Required by the ArrayAccess implementation
+     *
+     * @param string $offset
+     * @return boolean
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetExists($offset)
+    {
+    }
+
+    /**
+     * Proxy to __get
+     * Required by the ArrayAccess implementation
+     *
+     * @param string $offset
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetGet($offset)
+    {
+    }
+
+    /**
+     * Proxy to __set
+     * Required by the ArrayAccess implementation
+     *
+     * @param string $offset
+     * @param mixed $value
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetSet($offset, $value)
+    {
+    }
+
+    /**
+     * Proxy to __unset
+     * Required by the ArrayAccess implementation
+     *
+     * @param string $offset
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetUnset($offset)
+    {
+    }
+
+    /**
+     * Initialize object
+     *
+     * Called from {@link __construct()} as final step of object instantiation.
+     *
+     * @return void
+     */
+    public function init()
+    {
+    }
+
+    /**
+     * Returns the table object, or null if this is disconnected row
+     *
+     * @return TZendDbTable|null
+     */
+    public function getTable()
+    {
+    }
+
+    /**
+     * Set the table object, to re-establish a live connection
+     * to the database for a Row that has been de-serialized.
+     *
+     * @param TZendDbTable $table
+     * @return boolean
+     * @throws Zend_Db_Table_Row_Exception
+     */
+    public function setTable(Zend_Db_Table_Abstract $table = null)
+    {
+    }
+
+    /**
+     * Query the class name of the Table object for which this
+     * Row was created.
+     *
+     * @return class-string<TZendDbTable>
+     */
+    public function getTableClass()
+    {
+    }
+
+    /**
+     * Test the connected status of the row.
+     *
+     * @return boolean
+     */
+    public function isConnected()
+    {
+    }
+
+    /**
+     * Test the read-only status of the row.
+     *
+     * @return boolean
+     */
+    public function isReadOnly()
+    {
+    }
+
+    /**
+     * Set the read-only status of the row.
+     *
+     * @param boolean $flag
+     * @return void
+     */
+    public function setReadOnly($flag)
+    {
+    }
+
+    /**
+     * Returns an instance of the parent table's Zend_Db_Table_Select object.
+     *
+     * @return Zend_Db_Table_Select
+     */
+    public function select()
+    {
+    }
+
+    /**
+     * Saves the properties to the database.
+     *
+     * This performs an intelligent insert/update, and reloads the
+     * properties with fresh data from the table on success.
+     *
+     * @return mixed The primary key value(s), as an associative array if the
+     *     key is compound, or a scalar if the key is single-column.
+     */
+    public function save()
+    {
+    }
+
+    /**
+     * @return mixed The primary key value(s), as an associative array if the
+     *     key is compound, or a scalar if the key is single-column.
+     */
+    protected function _doInsert()
+    {
+    }
+
+    /**
+     * @return mixed The primary key value(s), as an associative array if the
+     *     key is compound, or a scalar if the key is single-column.
+     */
+    protected function _doUpdate()
+    {
+    }
+
+    /**
+     * Deletes existing rows.
+     *
+     * @return int The number of rows deleted.
+     */
+    public function delete()
+    {
+    }
+
+    #[\ReturnTypeWillChange]
+    public function getIterator()
+    {
+    }
+
+    /**
+     * Returns the column/value data as an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+    }
+
+    /**
+     * Sets all data in the row from an array.
+     *
+     * @param array $data
+     * @return $this Provides a fluent interface
+     */
+    public function setFromArray(array $data)
+    {
+    }
+
+    /**
+     * Refreshes properties from the database.
+     *
+     * @return void
+     */
+    public function refresh()
+    {
+    }
+
+    /**
+     * Retrieves an instance of the parent table.
+     *
+     * @return TZendDbTable
+     */
+    protected function _getTable()
+    {
+    }
+
+    /**
+     * Retrieves an associative array of primary keys.
+     *
+     * @param bool $useDirty
+     * @return array
+     */
+    protected function _getPrimaryKey($useDirty = true)
+    {
+    }
+
+    /**
+     * Retrieves an associative array of primary keys.
+     *
+     * @param bool $useDirty
+     * @return array
+     */
+    public function getPrimaryKey($useDirty = true)
+    {
+    }
+
+    /**
+     * Constructs where statement for retrieving row(s).
+     *
+     * @param bool $useDirty
+     * @return array
+     */
+    protected function _getWhereQuery($useDirty = true)
+    {
+    }
+
+    /**
+     * Refreshes properties from the database.
+     *
+     * @return void
+     */
+    protected function _refresh()
+    {
+    }
+
+    /**
+     * Allows pre-insert logic to be applied to row.
+     * Subclasses may override this method.
+     *
+     * @return void
+     */
+    protected function _insert()
+    {
+    }
+
+    /**
+     * Allows post-insert logic to be applied to row.
+     * Subclasses may override this method.
+     *
+     * @return void
+     */
+    protected function _postInsert()
+    {
+    }
+
+    /**
+     * Allows pre-update logic to be applied to row.
+     * Subclasses may override this method.
+     *
+     * @return void
+     */
+    protected function _update()
+    {
+    }
+
+    /**
+     * Allows post-update logic to be applied to row.
+     * Subclasses may override this method.
+     *
+     * @return void
+     */
+    protected function _postUpdate()
+    {
+    }
+
+    /**
+     * Allows pre-delete logic to be applied to row.
+     * Subclasses may override this method.
+     *
+     * @return void
+     */
+    protected function _delete()
+    {
+    }
+
+    /**
+     * Allows post-delete logic to be applied to row.
+     * Subclasses may override this method.
+     *
+     * @return void
+     */
+    protected function _postDelete()
+    {
+    }
+
+    /**
+     * Prepares a table reference for lookup.
+     *
+     * Ensures all reference keys are set and properly formatted.
+     *
+     * @param Zend_Db_Table_Abstract $dependentTable
+     * @param Zend_Db_Table_Abstract $parentTable
+     * @param string $ruleKey
+     * @return array
+     */
+    protected function _prepareReference(
+        Zend_Db_Table_Abstract $dependentTable,
+        Zend_Db_Table_Abstract $parentTable,
+        $ruleKey
+    ) {
+        $parentTableName = (get_class($parentTable) === 'Zend_Db_Table') ? $parentTable->getDefinitionConfigName() : get_class($parentTable);
+        $map = $dependentTable->getReference($parentTableName, $ruleKey);
+
+        if (!isset($map[Zend_Db_Table_Abstract::REF_COLUMNS])) {
+            $parentInfo = $parentTable->info();
+            $map[Zend_Db_Table_Abstract::REF_COLUMNS] = array_values((array) $parentInfo['primary']);
+        }
+
+        $map[Zend_Db_Table_Abstract::COLUMNS] = (array) $map[Zend_Db_Table_Abstract::COLUMNS];
+        $map[Zend_Db_Table_Abstract::REF_COLUMNS] = (array) $map[Zend_Db_Table_Abstract::REF_COLUMNS];
+
+        return $map;
+    }
+
+    /**
+     * Query a dependent table to retrieve rows matching the current row.
+     *
+     * @param string|Zend_Db_Table_Abstract $dependentTable
+     * @param string $ruleKey
+     * @param Zend_Db_Table_Select $select
+     * @return Zend_Db_Table_Rowset_Abstract Query result from $dependentTable
+     * @throws Zend_Db_Table_Row_Exception If $dependentTable is not a table or is not loadable.
+     */
+    public function findDependentRowset($dependentTable, $ruleKey = null, Zend_Db_Table_Select $select = null)
+    {
+    }
+
+    /**
+     * Query a parent table to retrieve the single row matching the current row.
+     *
+     * @param string|Zend_Db_Table_Abstract $parentTable
+     * @param string $ruleKey
+     * @param Zend_Db_Table_Select $select
+     * @return Zend_Db_Table_Row_Abstract|null   Query result from $parentTable
+     * @throws Zend_Db_Table_Row_Exception If $parentTable is not a table or is not loadable.
+     */
+    public function findParentRow($parentTable, $ruleKey = null, Zend_Db_Table_Select $select = null)
+    {
+    }
+
+    /**
+     * @param string|Zend_Db_Table_Abstract $matchTable
+     * @param string|Zend_Db_Table_Abstract $intersectionTable
+     * @param string $callerRefRule
+     * @param string $matchRefRule
+     * @param Zend_Db_Table_Select $select
+     * @return Zend_Db_Table_Rowset_Abstract Query result from $matchTable
+     * @throws Zend_Db_Table_Row_Exception If $matchTable or $intersectionTable is not a table class or is not loadable.
+     */
+    public function findManyToManyRowset(
+        $matchTable,
+        $intersectionTable,
+        $callerRefRule = null,
+        $matchRefRule = null,
+        Zend_Db_Table_Select $select = null
+    ) {
+    }
+
+    /**
+     * Turn magic function calls into non-magic function calls
+     * to the above methods.
+     *
+     * @param string $method
+     * @param array $args OPTIONAL Zend_Db_Table_Select query modifier
+     * @return Zend_Db_Table_Row_Abstract|Zend_Db_Table_Rowset_Abstract
+     * @throws Zend_Db_Table_Row_Exception If an invalid method is called.
+     */
+    public function __call($method, array $args)
+    {
+    }
+
+    /**
+     * _getTableFromString
+     *
+     * @param string $tableName
+     * @return Zend_Db_Table_Abstract
+     */
+    protected function _getTableFromString($tableName)
+    {
+    }
+}

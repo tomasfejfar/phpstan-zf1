@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\MyTable\CarRow;
+use App\CarRow;
 use function PHPStan\Testing\assertType;
 
 class TestClass
@@ -17,18 +17,28 @@ class TestClass
 
     public function testThis()
     {
-        assertType('App\MyTable\CarRow|null', $this->carsModel->fetchRow());
+        assertType('App\CarRow|null', $this->carsModel->fetchRow());
         // animal model does not have rowClass defined
         assertType('Zend_Db_Table_Row|null', $this->animalModel->fetchRow());
 
         assertType('\Zend_Db_Table_Rowset_Abstract<Zend_Db_Table_Row, App\AnimalModel>', $this->animalModel->fetchAll());
         $specificRowset = $this->carsModel->fetchAll();
-        assertType('\Zend_Db_Table_Rowset_Abstract<App\MyTable\CarRow, App\CarsModel>', $specificRowset);
-        assertType('App\MyTable\CarRow|null', $specificRowset->current());
-        assertType('array<int, App\MyTable\CarRow>', iterator_to_array($specificRowset));
+        assertType('\Zend_Db_Table_Rowset_Abstract<App\CarRow, App\CarsModel>', $specificRowset);
+        assertType('App\CarRow|null', $specificRowset->current());
+        assertType('array<int, App\CarRow>', iterator_to_array($specificRowset));
 
         // create row
         assertType(CarRow::class, $this->carsModel->createRow());
         assertType('Zend_Db_Table_Row', $this->animalModel->createRow());
+    }
+
+    public function testTableRelations()
+    {
+        $car = $this->carsModel->fetchRow();
+        if (!$car instanceof CarRow) {
+            return;
+        }
+        $brand = $car->findParentRow(CarBrandModel::class, 'brand');
+        assertType('App\CarBrandRow|null', $brand);
     }
 }

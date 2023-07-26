@@ -8,7 +8,10 @@ use LogicException;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
+use PHPStan\Type\TypeUtils;
 use PHPStan\Type\TypeWithClassName;
+use Zend_Db_Table_Row_Abstract;
 
 class RowClassReflector
 {
@@ -20,6 +23,8 @@ class RowClassReflector
         if (!$tableSupertype->isSuperTypeOf($dbTableClass)) {
             throw new LogicException('Cannot extract rowclass from something that is not a table');
         }
+
+
 
         $nativeReflection = $dbTableClass->getClassReflection()->getNativeReflection();
         if (!$nativeReflection->hasProperty(self::PROPERTY_ROW_CLASS)) {
@@ -41,7 +46,7 @@ class RowClassReflector
             return new ObjectType(Definitions::getDefaultRowFQCN());
         }
 
-        return new ObjectType($rowClassName);
+        return RowClassReflector::getRowTypeWithGeneric(new ObjectType($rowClassName), $dbTableClass);
     }
 
     public function fromRowsetClass(Type $rowsetClass): Type
@@ -53,5 +58,13 @@ class RowClassReflector
         $rowType = $rowsetClass->getTypes()[0];
 
         return $rowType;
+    }
+
+    public static function getRowTypeWithGeneric(ObjectType $objectType, TypeWithClassName $dbTableClass): Type
+    {
+        return TypeCombinator::union([
+            $objectType,
+            new GenericObjectType(Zend_Db_Table_Row_Abstract::class, $dbTableClass)
+        ]);
     }
 }

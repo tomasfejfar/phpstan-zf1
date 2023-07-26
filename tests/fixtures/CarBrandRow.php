@@ -6,6 +6,6 @@ namespace App;
 
 use Zend_Db_Table_Row;
 
-class CarRow extends Zend_Db_Table_Row
+class CarBrandRow extends Zend_Db_Table_Row
 {
 }
