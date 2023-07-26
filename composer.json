@@ -22,7 +22,8 @@
     },
     "config": {
         "sort-packages": true,
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "lock": false
     },
     "extra": {
         "phpstan": {
