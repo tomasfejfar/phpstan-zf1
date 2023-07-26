@@ -172,7 +172,7 @@ class TableExtension implements DynamicMethodReturnTypeExtension
     public function replaceTypesWithType(
         Type $sourceType,
         array $classNamesToReplace,
-        ?ObjectType $typeToReplaceWith,
+        ?ObjectType $typeToReplaceWith
     ): Type {
         return TypeTraverser::map(
             $sourceType,
