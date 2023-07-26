@@ -9,10 +9,10 @@ use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Type\ArrayType;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\NullType;
+use PHPStan\Type\IterableType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
@@ -114,7 +114,7 @@ class TableExtension implements DynamicMethodReturnTypeExtension
             return $originalReturnType;
         }
 
-        return TypeCombinator::union(new ArrayType(new IntegerType(), $dbTableRowClass), new ObjectType('Zend_Db_Table_Rowset'));
+        return TypeCombinator::intersect(new IterableType(new IntegerType(), $dbTableRowClass), new ObjectType('Zend_Db_Table_Rowset_Abstract'));
     }
 
     private function getDbTableRowClass(TypeWithClassName $dbTableClass): ?ObjectType
